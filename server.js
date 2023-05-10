@@ -16,8 +16,8 @@ const app=express();
 
 app.use(fileUpload(
     {
-        useTempFiles: false,
-        preserveExtension: false
+        useTempFiles: true,
+
     }
 ));
 

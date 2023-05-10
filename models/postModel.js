@@ -7,6 +7,7 @@ const postSchema=new mongoose.Schema({
 	message:{type: String,required:[true,"please enter author"]},
 	creator:String,
 	tags:[String],
+	publicId:String,
 	imageFile:String,
 	likes:{type:Number,default:0},
 	createdAt:{type:Date,default:new Date()}

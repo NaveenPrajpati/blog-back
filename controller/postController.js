@@ -1,22 +1,23 @@
 const postModel = require("../models/postModel");
 const cloudinary = require('cloudinary').v2;
+require("dotenv").config()
 
 // Configuration
 cloudinary.config({
     cloud_name: "dd07mszqg",
-    api_key: "642427667313868",
-    api_secret: "3_ut3MmLyqtTPKsWF5uzOwSNgxE"
+    api_key:process.env.CLOUDNARY_API_KEY,
+    api_secret:process.env.CLOUDNARY_API_SECRET
 });
 
-exports.getAllcont=async(req,res)=>{
+exports.getAllPost=async(req,res)=>{
         try {
-          const dat=await postModel.find({});
+          const dat=await postModel.find();
         res.status(200).json(dat);
     } catch (error) {
-        console.log("error occur in contoller")
+        console.log("error occur in getAll contoller")
     }  
 }
-exports.getbookId=async(req,res)=>{
+exports.getPostId=async(req,res)=>{
         try {
           const dat=await postModel.findById(req.params.id)
         res.status(200).json(dat);
@@ -59,47 +60,74 @@ exports.addPost=async(req,res)=>{
 
        const path='uploads/' + newFileName
         // Move the uploaded file to a new location with a new name
-        file.mv(path, function(err) {
-           if (err) {
-               console.log(err);
-               return res.status(500).send('Error occurred while uploading file');
-           }
-       });
+       //  file.mv(path, function(err) {
+       //     if (err) {
+       //         console.log(err);
+       //         return res.status(500).send('Error occurred while uploading file');
+       //     }
+       // });
 
         let imagePath;
-       await cloudinary.uploader.upload(path,{folder:"entry",use_filename:true})
+       let pubId;
+       await cloudinary.uploader.upload(file.tempFilePath,{folder:'entry'})
            .then(res=> {
                 console.log(res)
                imagePath=res.url.slice()
+               pubId=res.public_id;
            })
-           .catch(err=>console.log(err))
+           .catch(err=>console.log(err));
 
-        console.log(imagePath)
        
             // postm.save(creator,title,tags,message,imageFile:data)
-        const post= await postModel.create({creator,title,tags,message,imageFile:imagePath})
-        console.log(post)
+        const post= await postModel.create({creator,title,tags,message,publicId:pubId,imageFile:imagePath})
+        // console.log(post)
         res.status(201).json(post);
     } catch (error) {
+        console.log(error)
         console.log('error occured in save post controller')
     }  
 }
 
-exports.deletebook=async(req,res)=>{
+exports.deletePost=async(req,res)=>{
     try {
-        await postModel.findByIdAndDelete(req.params.id)
-        res.status(200).send("delete successfull")
+
+
+       const ids= await postModel.findByIdAndDelete(req.params.id)
+        console.log(ids.publicId)
+
+
+       await cloudinary.uploader
+            .destroy(ids.publicId)
+            .then(result=>console.log(result))
+
+
+
+        res.status(200).json(ids)
     } catch (error) {
         console.log('error occured in controller')    
     }
 }
 
-exports.updatebook=async(req,res)=>{
+exports.updatePost=async(req,res)=>{
     try {
-        const ids=await postModel.findByIdAndUpdate(req.params.id,req.body,{new:true});
-            res.json(ids)
+        console.log(req.body)
+        const ids=await postModel.findByIdAndUpdate(req.body._id,req.body,{new:true});
+        console.log(ids)
+
+        res.status(200).json(ids)
 
         } catch (error) {
                 console.log("error occured in controller")
         }
+}
+
+exports.updateLike=async(req,res)=>{
+    try {
+        const post=await postModel.findById(req.params.id);
+        const ids=await postModel.findByIdAndUpdate(req.params.id,{likes:post.likes+1},{new:true});
+        res.status(200).json(ids)
+
+    } catch (error) {
+        console.log("error occured in controller")
+    }
 }

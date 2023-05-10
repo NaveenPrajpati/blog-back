@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllcont, addPost } = require("../controller/postController");
+const { getAllPost, addPost,deletePost,updatePost,getPostId ,updateLike} = require("../controller/postController");
 const validateToken = require("../middleware/validateTokenHandler");
 
 
@@ -20,16 +20,17 @@ const validateToken = require("../middleware/validateTokenHandler");
 const router = express.Router();
 
 //public routes
-// router.get("/post", getAllcont);
-// router.get("/post/:id",getpostId);
+router.get("/post", getAllPost);
+router.get("/post/:id",getPostId);
 // router.get("/post/title/:name",getpostName);
 // router.get("/post/author/:name",getpostAuthor);
 // Add a new document to the collection
 
 //private routes
 router.post("/post", addPost);
-// router.delete("/post/:id",deletepost);
-// router.put("/post/:id", updatepost);
+router.delete("/post/:id",deletePost);
+router.put("/post", updatePost);
+router.patch("/post/:id",updateLike);
 
 
 module.exports = router;
