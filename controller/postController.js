@@ -49,7 +49,7 @@ exports.addPost=async(req,res)=>{
     try {
         console.log(req.body)
         console.log(req.files.selectedFile)
-        const {creator,title,tags,message}=req.body
+        const {creator,creatorId,title,tags,message}=req.body
         const file=req.files.selectedFile
 
         // Get the original file extension
@@ -79,7 +79,7 @@ exports.addPost=async(req,res)=>{
 
        
             // postm.save(creator,title,tags,message,imageFile:data)
-        const post= await postModel.create({creator,title,tags,message,publicId:pubId,imageFile:imagePath})
+        const post= await postModel.create({creator,creatorId,title,tags,message,publicId:pubId,imageFile:imagePath})
         // console.log(post)
         res.status(201).json(post);
     } catch (error) {
@@ -123,8 +123,16 @@ exports.updatePost=async(req,res)=>{
 
 exports.updateLike=async(req,res)=>{
     try {
+       
         const post=await postModel.findById(req.params.id);
-        const ids=await postModel.findByIdAndUpdate(req.params.id,{likes:post.likes+1},{new:true});
+        const index=post.likes.findIndex((id)=>{return (id==req.user.id)})
+     
+        if(index=== -1)
+        post.likes.push(req.user.id)
+        else
+        post.likes=post.likes.filter((id)=>id!==String(req.user.id))
+     
+        const ids=await postModel.findByIdAndUpdate(req.params.id,post,{new:true});
         res.status(200).json(ids)
 
     } catch (error) {

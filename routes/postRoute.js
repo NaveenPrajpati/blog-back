@@ -27,10 +27,10 @@ router.get("/post/:id",getPostId);
 // Add a new document to the collection
 
 //private routes
-router.post("/post", addPost);
-router.delete("/post/:id",deletePost);
-router.put("/post", updatePost);
-router.patch("/post/:id",updateLike);
+router.post("/post",validateToken, addPost);
+router.delete("/post/:id",validateToken,deletePost);
+router.put("/post",validateToken, updatePost);
+router.patch("/post/:id",validateToken,updateLike);
 
 
 module.exports = router;

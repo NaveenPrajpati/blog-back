@@ -1,12 +1,24 @@
 const asyncHandler = require('express-async-handler');
 const userModel = require('../models/userModel');
+const otpModel=require('../models/otpModel')
 const bcrypt = require('bcrypt');
-var jwt = require('jsonwebtoken');
+let jwt = require('jsonwebtoken');
+
 
 exports.registerUser=asyncHandler(async(req,res)=>{
-    const{username,email,password}=req.body;
-    // console.log(username+email+password)
-    if(!username || !email || !password){
+    console.log(req.body)
+
+    const{firstName,lastName,email,password,confpass,otp}=req.body;
+    const ot=await otpModel.findOne({otp:otp});
+    console.log(ot)
+    if(otp!==ot.otp){
+        console.log(ot)
+        res.status(500).json({
+            success:false,
+            message:"fail to validate otp"
+        })
+    }
+    if(!firstName || !lastName || !email || !password){
         res.status(400);
         throw new Error("all field ara necessary")
     }
@@ -20,9 +32,9 @@ exports.registerUser=asyncHandler(async(req,res)=>{
     //hash password
     const hashedPassword=await bcrypt.hash(password,10);
 
-    const user=await userModel.create({username,email,password:hashedPassword});
+    const user=await userModel.create({firstName,lastName,email,password:hashedPassword});
     if(user){
-        res.status(201).json({_id:user.id,email:user.email,username:user.username})
+        res.status(201).json({_id:user.id,email:user.email,firstName:user.firstName})
     }else{
         res.status(400);
         throw new Error("user data not valid");
@@ -35,23 +47,26 @@ exports.registerUser=asyncHandler(async(req,res)=>{
 
 
 exports.loginUser=asyncHandler(async(req,res)=>{
-    
+
     const {email,password}=req.body;
     if(!email || !password){
         res.status(400);
         throw new Error("all fields are necessary"); 
     }
-    const user=await userModel.findOne({email});
-
+    const findUser=await userModel.findOne({email});
+console.log(findUser)
     //compare password with hashpassword
-    if(user && (await bcrypt.compare(password,user.password))){
+    if(findUser && (await bcrypt.compare(password,findUser.password))){
+     const user={
+            name:findUser.firstName,
+                email:findUser.email,
+                id:findUser._id,
+        }
         const accessToken=jwt.sign({
-            user:{
-                username:user.username,
-                email:user.email,
-                id:user.id,
-            },
-        },process.env.ACCESS_TOKEN_SECREC,{expiresIn:"15m"});
+            user,
+        },process.env.ACCESS_TOKEN_SECREC,{expiresIn:"1h"});
+
+
         res.status(200).json({
             token:accessToken,
             user

@@ -6,11 +6,12 @@ const postSchema=new mongoose.Schema({
 	title:{type: String,required:true,default:'null'},
 	message:{type: String,required:[true,"please enter author"]},
 	creator:String,
-	tags:[String],
+		creatorId:String,
+		tags:[String],
 	publicId:String,
 	imageFile:String,
-	likes:{type:Number,default:0},
-	createdAt:{type:Date,default:new Date()}
+	likes:[{type:String,default:[]}],
+	createdAt:{type:Date,default:Date.now}
 
 }
 );
