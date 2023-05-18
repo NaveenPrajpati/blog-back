@@ -11,6 +11,7 @@ const postSchema=new mongoose.Schema({
 	publicId:String,
 	imageFile:String,
 	likes:[{type:String,default:[]}],
+	comments:[{type:mongoose.Schema.Types.ObjectId,ref:'comment'}],
 	createdAt:{type:Date,default:Date.now}
 
 }

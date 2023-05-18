@@ -1,6 +1,7 @@
 const express = require("express");
 const { getAllPost, addPost,deletePost,updatePost,getPostId ,updateLike} = require("../controller/postController");
 const validateToken = require("../middleware/validateTokenHandler");
+const {addComment} = require("../controller/commentController");
 
 
 
@@ -22,9 +23,6 @@ const router = express.Router();
 //public routes
 router.get("/post", getAllPost);
 router.get("/post/:id",getPostId);
-// router.get("/post/title/:name",getpostName);
-// router.get("/post/author/:name",getpostAuthor);
-// Add a new document to the collection
 
 //private routes
 router.post("/post",validateToken, addPost);
@@ -32,5 +30,6 @@ router.delete("/post/:id",validateToken,deletePost);
 router.put("/post",validateToken, updatePost);
 router.patch("/post/:id",validateToken,updateLike);
 
-
+//comment routes
+router.post("/post/comment",validateToken, addComment);
 module.exports = router;
