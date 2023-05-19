@@ -1,7 +1,7 @@
 const express = require("express");
 const { getAllPost, addPost,deletePost,updatePost,getPostId ,updateLike} = require("../controller/postController");
 const validateToken = require("../middleware/validateTokenHandler");
-const {addComment} = require("../controller/commentController");
+const {addComment,getComments} = require("../controller/commentController");
 
 
 
@@ -31,5 +31,6 @@ router.put("/post",validateToken, updatePost);
 router.patch("/post/:id",validateToken,updateLike);
 
 //comment routes
-router.post("/post/comment",validateToken, addComment);
+router.put("/post/comment",validateToken, addComment);
+// router.get("/post/comment",validateToken,getComments)
 module.exports = router;

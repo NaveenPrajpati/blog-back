@@ -1,5 +1,6 @@
 const postModel = require("../models/postModel");
 const cloudinary = require('cloudinary').v2;
+const fs = require('fs');
 require("dotenv").config()
 
 // Configuration
@@ -22,6 +23,7 @@ exports.getPostId=async(req,res)=>{
           const dat=await postModel.findById(req.params.id)
         res.status(200).json(dat);
     } catch (error) {
+            console.log(error)
         console.log("error occur in contoller");
         
     }  
@@ -31,6 +33,7 @@ exports.getbookName=async(req,res)=>{
           const dat=await postModel.find({title:req.params.name}) 
         res.status(200).json(dat);
     } catch (error) {
+            console.log(error)
         console.log("error occur in contoller")
         res.send("name not found")
     }  
@@ -40,6 +43,7 @@ exports.getbookAuthor=async(req,res)=>{
           const dat=await postModel.find({author:req.params.name}) 
         res.status(200).json(dat);
     } catch (error) {
+            console.log(error)
         console.log("error occur in contoller")
         res.send("name not found")
     }  
@@ -77,8 +81,16 @@ exports.addPost=async(req,res)=>{
            })
            .catch(err=>console.log(err));
 
-       
-            // postm.save(creator,title,tags,message,imageFile:data)
+
+       //delete tmp file
+       await fs.unlink(file.tempFilePath, (err) => {
+            if (err) {
+                console.error(err);
+            }
+        });
+
+
+        // postm.save(creator,title,tags,message,imageFile:data)
         const post= await postModel.create({creator,creatorId,title,tags,message,publicId:pubId,imageFile:imagePath})
         // console.log(post)
         res.status(201).json(post);
