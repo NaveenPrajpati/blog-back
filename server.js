@@ -1,12 +1,13 @@
 const express=require("express");
 const env=require("dotenv");
 const routes=require("./routes/postRoute")
-const connectWithDb = require("./db/config");
-const transporter=require('./db/mailerConfig')
+const connectWithDb = require("./config/dbConfig");
+const transporter=require('./config/mailerConfig')
 const errorHandler=require("./middleware/errorHandler");
 const cors = require('cors')
 const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser')
+const cloudinaryConf=require('./config/cloudinaryConfig')
 
 
 
@@ -41,6 +42,7 @@ app.listen(process.env.PORT,()=>{
 })
 connectWithDb();
 transporter();
+cloudinaryConf();
 
 app.get("/",(request,response)=>{
     response.send('this is homepage')

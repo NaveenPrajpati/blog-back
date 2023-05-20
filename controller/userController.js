@@ -69,6 +69,7 @@ console.log(findUser)
 
         res.status(200).json({
             token:accessToken,
+
             user
         });
     }

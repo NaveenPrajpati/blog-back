@@ -21,7 +21,6 @@ exports.sendOtp = async(req, res, next) => {
         const seed = new Date().getTime().toString();
 
         let otp = otpGenerator.generate(6, {digits: true, alphabets: false, upperCase: false, specialChars: false},seed);
-        console.log("otp is- ",otp);
 
         // //check unique otp
         // let result=await OTP.findOne({otp})
@@ -30,20 +29,16 @@ exports.sendOtp = async(req, res, next) => {
         //     otp = otpGenerator.generate(6, {digits: true, alphabets: false, upperCase: false, specialChars: false},see);
         //     result=await OTP.findOne({otp:otp})
         // }
-
         const otpPayload={email,otp};
 
         //create entry for otp
         const otpBody=await OTP.create(otpPayload);
-        console.log(otpBody)
 
         res.status(200).json({
             success:true,
             message:'otp sent successfully',
             otp
         })
-
-
 
         // Call the next middleware function in the chain.
         next();

@@ -1,5 +1,5 @@
 const nodemailer=require('nodemailer')
-const transporter = require("../db/mailerConfig");
+const transporter = require("../config/mailerConfig");
 
 
 const mailSender=async (email,title,body)=>{
