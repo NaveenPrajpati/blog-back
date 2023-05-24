@@ -8,7 +8,7 @@ let jwt = require('jsonwebtoken');
 exports.registerUser=asyncHandler(async(req,res)=>{
     console.log(req.body)
 
-    const{firstName,lastName,email,password,confpass,otp}=req.body;
+    const{firstName,lastName,email,password,userType,otp}=req.body;
     const ot=await otpModel.findOne({otp:otp});
     console.log(ot)
     if(otp!==ot.otp){
@@ -32,7 +32,7 @@ exports.registerUser=asyncHandler(async(req,res)=>{
     //hash password
     const hashedPassword=await bcrypt.hash(password,10);
 
-    const user=await userModel.create({firstName,lastName,email,password:hashedPassword});
+    const user=await userModel.create({firstName,lastName,email,userType,password:hashedPassword});
     if(user){
         res.status(201).json({_id:user.id,email:user.email,firstName:user.firstName})
     }else{
@@ -60,6 +60,7 @@ console.log(findUser)
      const user={
             name:findUser.firstName,
                 email:findUser.email,
+                userType:findUser.userType,
                 id:findUser._id,
         }
         const accessToken=jwt.sign({
@@ -81,6 +82,41 @@ console.log(findUser)
 
 
 //access private
-exports.currentUser=asyncHandler((req,res)=>{
-    res.json(req.user);
+exports.createPassword=asyncHandler(async (req,res)=>{
+    const {otp,newPassword,confNewPassword}=req.body;
+
+    const check=await otpModel.findOne({otp});
+
+    if(!check) {
+        res.status(400).json({
+            status: false,
+            message: 'invalid OTP'
+        })
+    }
+        if(newPassword !== confNewPassword){
+            res.status(400).json({
+                status:false,
+                message:'password and confirm password mismatch'
+            })
+        }
+
+        //hash password
+        const hashedPassword=await bcrypt.hash(newPassword,10);
+
+
+        await userModel.findOneAndUpdate({email:check.email},{password:hashedPassword},{new:true})
+            .then(response=>{
+                res.status(201).json({
+                    success:true,
+                    message:'password changed successfully'
+                })
+            })
+            .catch(err=>{
+                console.log(err)
+            })
+
+
+
+
+
 });
