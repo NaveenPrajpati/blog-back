@@ -1,6 +1,6 @@
 const nodemailer=require('nodemailer')
 const transporter = require("../config/mailerConfig");
-const otpTemplate =require('./otpTemplate');
+const otpTemplate =require('./OtpTemplate');
 
 
 const mailSender=async (email,title,body,action)=>{
