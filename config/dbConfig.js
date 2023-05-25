@@ -3,7 +3,10 @@ const env = require("dotenv");
 env.config();
 
 const connectWithDb = () => {
-    mongoose.connect(process.env.BASE_URL)
+    mongoose.connect(process.env.BASE_URL,{
+        useUnifiedTopology:true,
+        useNewUrlParser:true
+    })
         .then(res => {
             console.log("db connected")
             console.log(res.connection.host)
