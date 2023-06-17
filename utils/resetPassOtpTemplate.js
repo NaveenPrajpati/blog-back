@@ -66,7 +66,7 @@ const resetOtpTemplate = (otp) => {
 
 	<body>
 		<div class="container">
-			<a href="https://studynotion-edtech-project.vercel.app"><h1>Welcome to Memories</h1></a>
+			<h1>Welcome to Memories</h1>
 			<div class="message">Reset Password OTP Verification Email</div>
 			<div class="body">
 				<p>Dear User,</p>

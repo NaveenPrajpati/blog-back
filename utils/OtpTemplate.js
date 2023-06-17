@@ -66,11 +66,11 @@ const otpTemplate = (otp,action) => {
 
 	<body>
 		<div class="container">
-			<a href="https://studynotion-edtech-project.vercel.app"><h1>Welcome to Memories</h1></a>
-			<div class="message">Reset Password OTP Verification Email</div>
+			<h1>Welcome to Memories</h1>
+			<div class="message"> OTP Verification Email</div>
 			<div class="body">
 				<p>Dear User,</p>
-				<p>OTP for reseting your password</p>
+				<p>OTP for registring account</p>
 				<h2 class="highlight">${otp}</h2>
 				<p>This OTP is valid for 5 minutes. If you did not request this verification, please disregard this email.
 				Once your account is verified, you will have access to our platform and its features.</p>
