@@ -58,7 +58,7 @@ exports.addPost=async(req,res)=>{
            .catch(err=>console.log(err));
 
        //delete tmp file
-       await fs.unlink(file.tempFilePath, (err) => {
+        fs.unlink(file.tempFilePath, (err) => {
             if (err) {
                 console.error(err);
             }
